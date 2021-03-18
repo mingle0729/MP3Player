@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="이름순" android:id="@+id/sortName" />
+    <item android:title="조회순" android:id="@+id/sortPlay" />
+    <item android:title="가수순" android:id="@+id/sortArtist" />
+</menu>
