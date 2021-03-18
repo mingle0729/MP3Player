@@ -239,7 +239,27 @@ public class MusicDBDAO extends SQLiteOpenHelper {
     public ArrayList<MusicData> dbMatchToSdCard() {
         //db
         ArrayList<MusicData> dbList = selectMusicTBL();
-        return dbList; //수정할거임
+        //sdcard
+        ArrayList<MusicData> sdList = sdCardListAdd();
+
+        //1. db가 비어있다면 sd카드내용을 그대로 리턴
+        if(dbList == null) {
+            return sdList;
+        }
+
+        //2. db가 sd카드의 내용을 모두 가지고 있다면 db의 내용을 리턴
+        if(dbList.containsAll(sdList)) {
+            return dbList;
+        }
+
+        //3. db에 없는 내용이 sd카드에 존재할 경우 db에 추가
+        for(int i=0;i<sdList.size();i++) {
+            if(!dbList.contains(sdList.get(i))) {
+                dbList.add(sdList.get(i));
+            }
+        }
+
+        return dbList;
     }
 
 }
