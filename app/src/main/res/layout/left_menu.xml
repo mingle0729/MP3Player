@@ -9,7 +9,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/dark_green"
+        android:background="@drawable/dk_green"
         android:layout_weight="1" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

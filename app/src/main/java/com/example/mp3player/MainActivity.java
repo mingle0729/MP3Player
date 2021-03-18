@@ -52,31 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    private void contentProviderMP3() {
-//        String[] data = {
-//                MediaStore.Audio.Media._ID,
-//                MediaStore.Audio.Media.ARTIST,
-//                MediaStore.Audio.Media.TITLE,
-//                MediaStore.Audio.Media.ALBUM_ID,
-//                MediaStore.Audio.Media.DURATION,
-//                MediaStore.Audio.Media._COUNT
-//        };
-//
-//        //커서 = title의 asc순 쿼리문
-//        Cursor cursor = getApplicationContext().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-//                data,null,null,data[2]+" ASC");
-//
-//        if(cursor != null) {
-//            while(cursor.moveToNext()) {
-//                String id = cursor.getString(cursor.getColumnIndex(data[0]));
-//                String artist = cursor.getString(cursor.getColumnIndex(data[1]));
-//                String title = cursor.getString(cursor.getColumnIndex(data[2]));
-//                String albumArt = cursor.getString(cursor.getColumnIndex(data[3]));
-//                String duration = cursor.getString(cursor.getColumnIndex(data[4]));
-//
-//            }
-//        }
-//    }
+
 
     private void findMP3FileName() {
         File[] nameList = new File(MP3PATH).listFiles();

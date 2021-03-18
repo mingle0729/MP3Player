@@ -13,9 +13,9 @@ public class MusicData {
     private String albumArt;
     private String duration;
     private int playCount;
-    private boolean favor;
+    private int favor;
 
-    public MusicData(String id, String artist, String title, String albumArt, String duration, int playCount, boolean favor) {
+    public MusicData(String id, String artist, String title, String albumArt, String duration, int playCount, int favor) {
         this.id = id;
         this.artist = artist;
         this.title = title;
@@ -49,7 +49,7 @@ public class MusicData {
         return playCount;
     }
 
-    public boolean isFavor() {
+    public int getFavor() {
         return favor;
     }
 
@@ -77,7 +77,7 @@ public class MusicData {
         this.playCount = playCount;
     }
 
-    public void setFavor(boolean favor) {
+    public void setFavor(int favor) {
         this.favor = favor;
     }
 
