@@ -89,7 +89,7 @@ public class MusicDBDAO extends SQLiteOpenHelper {
         return returnValue;
     }
 
-    //db 내용 수정(선호, 조회수)
+    //db 내용 update(선호, 조회수)
     public boolean updateMusicTBL(MusicData mData) {
         boolean returnValue = false;
         SQLiteDatabase db = getWritableDatabase();
@@ -116,8 +116,7 @@ public class MusicDBDAO extends SQLiteOpenHelper {
                 MediaStore.Audio.Media.ARTIST,
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.ALBUM_ID,
-                MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media._COUNT
+                MediaStore.Audio.Media.DURATION
         };
 
         //커서 = title의 asc순 쿼리문

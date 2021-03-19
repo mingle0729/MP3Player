@@ -8,14 +8,14 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1" >
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler"
+            android:id="@+id/recyclerPCount"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/dk_green" />
+            android:background="@drawable/dk_green"/>
     </FrameLayout>
 
 
