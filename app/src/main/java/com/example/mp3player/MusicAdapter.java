@@ -82,7 +82,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.CustomViewHo
         SimpleDateFormat sdf = new SimpleDateFormat("m:ss");
         viewHolder.lm_tvTitle.setText(list.get(position).getTitle());
         viewHolder.lm_tvArtist.setText(list.get(position).getArtist());
-        viewHolder.lm_tvDuration.setText(list.get(position).getDuration());
+        viewHolder.lm_tvDuration.setText(sdf.format(Integer.parseInt(list.get(position).getDuration())));
     }
 
 

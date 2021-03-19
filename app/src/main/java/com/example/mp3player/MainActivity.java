@@ -89,17 +89,17 @@ public class MainActivity extends AppCompatActivity {
         musicAdapter.notifyDataSetChanged();
         recycler.setAdapter(musicAdapter);
 
-        musicAdapterFavor = new MusicAdapter(getApplicationContext(),favorList);
-        linearLayoutManagerFavor = new LinearLayoutManager(getApplicationContext());
-        recyclerFavor.setLayoutManager(linearLayoutManagerFavor);
-        musicAdapterFavor.notifyDataSetChanged();
-        recyclerFavor.setAdapter(musicAdapterFavor);
-
-        musicAdapterPCount = new MusicAdapter(getApplicationContext(),pCountList);
-        linearLayoutManagerPCount = new LinearLayoutManager(getApplicationContext());
-        recyclerPCount.setLayoutManager(linearLayoutManagerPCount);
-        musicAdapterPCount.notifyDataSetChanged();
-        recyclerPCount.setAdapter(musicAdapterPCount);
+//        musicAdapterFavor = new MusicAdapter(getApplicationContext(),favorList);
+//        linearLayoutManagerFavor = new LinearLayoutManager(getApplicationContext());
+//        recyclerFavor.setLayoutManager(linearLayoutManagerFavor);
+//        musicAdapterFavor.notifyDataSetChanged();
+//        recyclerFavor.setAdapter(musicAdapterFavor);
+//
+//        musicAdapterPCount = new MusicAdapter(getApplicationContext(),pCountList);
+//        linearLayoutManagerPCount = new LinearLayoutManager(getApplicationContext());
+//        recyclerPCount.setLayoutManager(linearLayoutManagerPCount);
+//        musicAdapterPCount.notifyDataSetChanged();
+//        recyclerPCount.setAdapter(musicAdapterPCount);
     }
 
     private void getMP3FileFunc() {
