@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 
@@ -82,26 +83,26 @@ public class MusicDBDAO extends SQLiteOpenHelper {
         } catch (Exception e) {
             Log.d("insert DB", "이미 값이 있음");
             returnValue = false;
-        }finally {
-            db.close();
         }
 
         return returnValue;
     }
 
     //db 내용 update(선호, 조회수)
-    public boolean updateMusicTBL(MusicData mData) {
+    public boolean updateMusicTBL(ArrayList<MusicData> list) {
         boolean returnValue = false;
         SQLiteDatabase db = getWritableDatabase();
 
         try {
-            String query = "update musicTBL set playCount = " + mData.getPlayCount() + ", favor = " + mData.getFavor() + " where id = '" + mData.getId() + "');";
-            db.execSQL(query);
-            returnValue = true;
+            for(MusicData mData : list) {
+                String query = "update musicTBL set playCount = " + mData.getPlayCount() + ", favor = " + mData.getFavor() + " where id = " + mData.getId() + ";";
+                db.execSQL(query);
+                returnValue = true;
+                Log.d("updateDB","업데이트성공");
+            }
         } catch (Exception e) {
             returnValue = false;
-        } finally {
-            db.close();
+            Log.d("updateDB","업데이트실패");
         }
 
         return returnValue;
@@ -138,8 +139,6 @@ public class MusicDBDAO extends SQLiteOpenHelper {
                 }
             }catch(Exception e) {
                 Log.e("sdCardListAdd", "cursor Error");
-            }finally {
-                cursor.close();
             }
         }
 
@@ -167,11 +166,7 @@ public class MusicDBDAO extends SQLiteOpenHelper {
             }
         }catch(Exception e) {
             Log.e("selectMusicTBL","select Error");
-        }finally {
-            db.close();
-            cursor.close();
         }
-
 
         return list;
     }
@@ -197,9 +192,6 @@ public class MusicDBDAO extends SQLiteOpenHelper {
             }
         }catch(Exception e) {
             Log.e("selectMusicTBLFavor","select Error(favor)");
-        }finally {
-            db.close();
-            cursor.close();
         }
         return list;
     }
@@ -208,7 +200,7 @@ public class MusicDBDAO extends SQLiteOpenHelper {
     public ArrayList<MusicData> selectMusicTBLPlayCount() {
         ArrayList<MusicData> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from musicTBL order by playCount asc;", null);
+        Cursor cursor = db.rawQuery("select * from musicTBL order by playCount desc;", null);
 
         try {
             while(cursor.moveToNext()) {
@@ -225,10 +217,7 @@ public class MusicDBDAO extends SQLiteOpenHelper {
             }
 
         }catch(Exception e) {
-            Log.e("selectMusicTBLFavor","select Error(favor)");
-        }finally {
-            db.close();
-            cursor.close();
+            Log.e("selectMusicTBLPCount","select Error(favor)");
         }
 
         return list;
@@ -261,4 +250,30 @@ public class MusicDBDAO extends SQLiteOpenHelper {
         return dbList;
     }
 
+
+    public ArrayList<MusicData> selectMusicTBLPlayCountTop5() {
+        ArrayList<MusicData> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from musicTBL order by playCount desc limit 5;", null);
+
+        try {
+            while(cursor.moveToNext()) {
+                String id = cursor.getString(0);
+                String artist = cursor.getString(1);
+                String title = cursor.getString(2);
+                String albumArt = cursor.getString(3);
+                String duration = cursor.getString(4);
+                int playCount = cursor.getInt(5);
+                int favor = cursor.getInt(6);
+
+                MusicData musicData = new MusicData(id, artist, title, albumArt, duration, playCount, favor);
+                list.add(musicData);
+            }
+
+        }catch(Exception e) {
+            Log.e("selectMusicTBLPCount 5","select Error(favor)");
+        }
+
+        return list;
+    }
 }

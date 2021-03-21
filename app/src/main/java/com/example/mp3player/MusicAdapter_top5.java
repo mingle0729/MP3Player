@@ -12,9 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,28 +23,27 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.CustomViewHolder> implements Parcelable {
+public class MusicAdapter_top5 extends RecyclerView.Adapter<MusicAdapter_top5.CustomViewHolder> implements Parcelable {
     private Context context;
     private ArrayList<MusicData> list;
     private OnItemClickListener mListener;
 
-    public MusicAdapter(Context context, ArrayList<MusicData> list) {
+    public MusicAdapter_top5(Context context, ArrayList<MusicData> list) {
         this.context = context;
         this.list = list;
     }
 
     //뷰홀더 정의(recyclerView에서 화면 뒤에 가려진 객체의 저장 및 재사용목적)
     public class CustomViewHolder extends RecyclerView.ViewHolder {
-        private ImageView lm_ivAlbum;
-        private TextView lm_tvTitle, lm_tvArtist, lm_tvDuration;
+        private ImageView lm_ivAlbum_pCount;
+        private TextView lm_title_pCount, lm_tvArtist_pCount;
 
         public CustomViewHolder(@NonNull View itemView) {
             //뷰홀더에 홀딩할 데이터
             super(itemView);
-            lm_ivAlbum = itemView.findViewById(R.id.lm_ivAlbum);
-            lm_tvTitle = itemView.findViewById(R.id.lm_tvTitle);
-            lm_tvArtist = itemView.findViewById(R.id.lm_tvArtist);
-            lm_tvDuration = itemView.findViewById(R.id.lm_tvDuration);
+            lm_ivAlbum_pCount = itemView.findViewById(R.id.lm_ivAlbum_pCount);
+            lm_title_pCount = itemView.findViewById(R.id.lm_title_pCount);
+            lm_tvArtist_pCount = itemView.findViewById(R.id.lm_tvArtist_pCount);
 
             itemView.setOnClickListener(v-> {
                 int position = getAdapterPosition();
@@ -58,7 +55,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.CustomViewHo
 
     }
 
-    protected MusicAdapter(Parcel in) {
+    protected MusicAdapter_top5(Parcel in) {
     }
 
     @Override
@@ -70,43 +67,41 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.CustomViewHo
         return 0;
     }
 
-    public static final Creator<MusicAdapter> CREATOR = new Creator<MusicAdapter>() {
+    public static final Creator<MusicAdapter_top5> CREATOR = new Creator<MusicAdapter_top5>() {
         @Override
-        public MusicAdapter createFromParcel(Parcel in) {
-            return new MusicAdapter(in);
+        public MusicAdapter_top5 createFromParcel(Parcel in) {
+            return new MusicAdapter_top5(in);
         }
 
         @Override
-        public MusicAdapter[] newArray(int size) {
-            return new MusicAdapter[size];
+        public MusicAdapter_top5[] newArray(int size) {
+            return new MusicAdapter_top5[size];
         }
     };
 
     //뷰홀더 안의 객체 생성
     @NonNull
     @Override
-    public MusicAdapter.CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.left_item, parent,false);
+    public MusicAdapter_top5.CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.left_menu_item_pcount, parent,false);
         CustomViewHolder viewHolder = new CustomViewHolder(view);
         return viewHolder;
     }
 
     //뷰홀더의 position번째 객체에 대한 정의
     @Override
-    public void onBindViewHolder(@NonNull MusicAdapter.CustomViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull MusicAdapter_top5.CustomViewHolder viewHolder, int position) {
         //앨범 이미지를 먼저 가져와서 아이템에 배치
-        Bitmap albumImg = getAlbumImg(context, Long.parseLong(list.get(position).getAlbumArt()),200);
+        Bitmap albumImg = getAlbumImg(context, Long.parseLong(list.get(position).getAlbumArt()),110);
         if(albumImg != null) {
-            viewHolder.lm_ivAlbum.setImageBitmap(albumImg);
+            viewHolder.lm_ivAlbum_pCount.setImageBitmap(albumImg);
         }
 
         //아이템(뷰홀더 안의 객체) 나머지 데이터 배치
         SimpleDateFormat sdf = new SimpleDateFormat("m:ss");
-        viewHolder.lm_tvTitle.setText(list.get(position).getTitle());
-        viewHolder.lm_tvArtist.setText(list.get(position).getArtist());
-        viewHolder.lm_tvDuration.setText(sdf.format(Integer.parseInt(list.get(position).getDuration())));
+        viewHolder.lm_title_pCount.setText(list.get(position).getTitle());
+        viewHolder.lm_tvArtist_pCount.setText(list.get(position).getArtist());
     }
-
 
     //앨범의 이미지를 가져오는 메소드
     public Bitmap getAlbumImg(Context context, long albumArt, int maxSize) {

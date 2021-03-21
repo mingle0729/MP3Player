@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_weight="2">
+        android:layout_weight="4">
 
         <TextView
             android:id="@+id/lm_tvTitle"
@@ -29,7 +29,7 @@
             android:paddingBottom="2dp"
             android:text="음악이름"
             android:textColor="@color/orange"
-            android:textSize="17sp"
+            android:textSize="15dp"
             android:textStyle="bold" />
         <TextView
             android:id="@+id/lm_tvArtist"
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:text="가수이름"
             android:textColor="@color/orange"
-            android:textSize="14sp"
+            android:textSize="12dp"
             android:paddingLeft="10dp"
             android:maxLines="1"
             android:ellipsize="end"/>
@@ -47,35 +47,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_weight="1"
+        android:gravity="right"
+        android:layout_gravity="center_vertical"
         android:layout_marginRight="20dp">
 
         <TextView
             android:id="@+id/lm_tvDuration"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="4:40"
+            android:text="0:00"
             android:textColor="@color/orange"
-            android:layout_weight="1"
-            android:textSize="16sp" />
+            android:textSize="15dp" />
 
-        <ProgressBar
-            android:id="@+id/lm_pb"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="invisible"
-            android:layout_weight="1"/>
-
-        <ImageButton
-            android:id="@+id/lm_imgBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/dark_green"
-            android:layout_gravity="right|center"
-            android:src="@drawable/ic_baseline_star_outline_40" />
     </LinearLayout>
 
 </LinearLayout>

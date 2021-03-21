@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="이름순" android:id="@+id/sortName" />
-    <item android:title="조회순" android:id="@+id/sortPlay" />
-    <item android:title="가수순" android:id="@+id/sortArtist" />
+    <item
+        android:id="@+id/sortName"
+        android:icon="@drawable/ic_baseline_sort_by_alpha_24"
+        android:title="이름순" />
+    <item
+        android:id="@+id/sortFavor"
+        android:title="이름순(선호)"
+        android:icon="@drawable/ic_baseline_favorite_24"/>
+    <item
+        android:id="@+id/sortPCount"
+        android:title="조회순"
+        android:icon="@drawable/ic_baseline_touch_app_24"/>
+    <item
+        android:id="@+id/toPlayer"
+        android:title="플레이어"
+        android:icon="@drawable/ic_baseline_music_video_24" />
 </menu>
