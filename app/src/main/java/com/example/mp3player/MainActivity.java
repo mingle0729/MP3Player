@@ -24,7 +24,9 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,8 +57,9 @@ public class MainActivity extends AppCompatActivity {
     private MediaPlayer mPlayer = new MediaPlayer();
     private boolean flag = false; // false = 현재 일시정지, true = 현재 재생중
     private int index;
-    private int type = 2;
+    private int type;
     private long backBtn = 0;
+    private int maxIndex;
     private String str;
 
     @Override
@@ -84,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         //첫화면 -> 조회수 순으로 지정
         setPlayerData(0);
-        mPlayer.stop();
+        mPlayer.pause();
 
         eventHandler();
     }
@@ -208,12 +211,14 @@ public class MainActivity extends AppCompatActivity {
         imgBtnNext.setOnClickListener(v -> {
             mPlayer.stop();
             mPlayer.reset();
-            if (index == musicList.size() - 1 || index == favorList.size() - 1 || index == pCountList.size() - 1 || index == pCountList5.size() - 1) {
-                index--;
+            if (index == maxIndex-1) {
                 Toast.makeText(this, "재생리스트의 마지막입니다", Toast.LENGTH_SHORT).show();
+                index--;
             }
             index++;
             setPlayerData(index);
+
+
         });
 
         imgBtnFavor.setOnClickListener(v -> {
@@ -392,18 +397,23 @@ public class MainActivity extends AppCompatActivity {
         switch (type) {
             case 0:
                 musicData = musicList.get(position);
+                maxIndex = musicList.size();
                 break;
             case 1:
                 musicData = favorList.get(position);
+                maxIndex = favorList.size();
                 break;
             case 2:
                 musicData = pCountList.get(position);
+                maxIndex = pCountList.size();
                 break;
             case 3:
                 musicData = pCountList5.get(position);
+                maxIndex = pCountList5.size();
                 break;
             case 4:
                 musicData = searchList.get(position);
+                maxIndex = searchList.size();
                 break;
         }
 
