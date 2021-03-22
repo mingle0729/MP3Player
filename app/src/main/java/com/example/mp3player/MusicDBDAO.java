@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -56,7 +57,6 @@ public class MusicDBDAO extends SQLiteOpenHelper {
     }
 
 
-
     //insert(이미 있는 자료이면 포함시키지 않을 것)
     public boolean insertMusicTBL(ArrayList<MusicData> list) {
         boolean returnValue = false;
@@ -94,15 +94,15 @@ public class MusicDBDAO extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
 
         try {
-            for(MusicData mData : list) {
+            for (MusicData mData : list) {
                 String query = "update musicTBL set playCount = " + mData.getPlayCount() + ", favor = " + mData.getFavor() + " where id = " + mData.getId() + ";";
                 db.execSQL(query);
                 returnValue = true;
-                Log.d("updateDB","업데이트성공");
+                Log.d("updateDB", "업데이트성공");
             }
         } catch (Exception e) {
             returnValue = false;
-            Log.d("updateDB","업데이트실패");
+            Log.d("updateDB", "업데이트실패");
         }
 
         return returnValue;
@@ -134,10 +134,10 @@ public class MusicDBDAO extends SQLiteOpenHelper {
                     String albumArt = cursor.getString(cursor.getColumnIndex(data[3]));
                     String duration = cursor.getString(cursor.getColumnIndex(data[4]));
 
-                    MusicData mData = new MusicData(id, artist, title,albumArt, duration,0,0);
+                    MusicData mData = new MusicData(id, artist, title, albumArt, duration, 0, 0);
                     list.add(mData);
                 }
-            }catch(Exception e) {
+            } catch (Exception e) {
                 Log.e("sdCardListAdd", "cursor Error");
             }
         }
@@ -152,7 +152,7 @@ public class MusicDBDAO extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("select * from musicTBL;", null);
 
         try {
-            while(cursor.moveToNext()) {
+            while (cursor.moveToNext()) {
                 String id = cursor.getString(0);
                 String artist = cursor.getString(1);
                 String title = cursor.getString(2);
@@ -164,8 +164,8 @@ public class MusicDBDAO extends SQLiteOpenHelper {
                 MusicData musicData = new MusicData(id, artist, title, albumArt, duration, playCount, favor);
                 list.add(musicData);
             }
-        }catch(Exception e) {
-            Log.e("selectMusicTBL","select Error");
+        } catch (Exception e) {
+            Log.e("selectMusicTBL", "select Error");
         }
 
         return list;
@@ -178,7 +178,7 @@ public class MusicDBDAO extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("select * from musicTBL where favor = 1;", null);
 
         try {
-            while(cursor.moveToNext()) {
+            while (cursor.moveToNext()) {
                 String id = cursor.getString(0);
                 String artist = cursor.getString(1);
                 String title = cursor.getString(2);
@@ -190,8 +190,8 @@ public class MusicDBDAO extends SQLiteOpenHelper {
                 MusicData musicData = new MusicData(id, artist, title, albumArt, duration, playCount, favor);
                 list.add(musicData);
             }
-        }catch(Exception e) {
-            Log.e("selectMusicTBLFavor","select Error(favor)");
+        } catch (Exception e) {
+            Log.e("selectMusicTBLFavor", "select Error(favor)");
         }
         return list;
     }
@@ -203,7 +203,7 @@ public class MusicDBDAO extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("select * from musicTBL order by playCount desc;", null);
 
         try {
-            while(cursor.moveToNext()) {
+            while (cursor.moveToNext()) {
                 String id = cursor.getString(0);
                 String artist = cursor.getString(1);
                 String title = cursor.getString(2);
@@ -216,8 +216,8 @@ public class MusicDBDAO extends SQLiteOpenHelper {
                 list.add(musicData);
             }
 
-        }catch(Exception e) {
-            Log.e("selectMusicTBLPCount","select Error(favor)");
+        } catch (Exception e) {
+            Log.e("selectMusicTBLPCount", "select Error(playcount)");
         }
 
         return list;
@@ -231,18 +231,18 @@ public class MusicDBDAO extends SQLiteOpenHelper {
         ArrayList<MusicData> sdList = sdCardListAdd();
 
         //1. db가 비어있다면 sd카드내용을 그대로 리턴
-        if(dbList == null) {
+        if (dbList == null) {
             return sdList;
         }
 
         //2. db가 sd카드의 내용을 모두 가지고 있다면 db의 내용을 리턴
-        if(dbList.containsAll(sdList)) {
+        if (dbList.containsAll(sdList)) {
             return dbList;
         }
 
         //3. db에 없는 내용이 sd카드에 존재할 경우 db에 추가
-        for(int i=0;i<sdList.size();i++) {
-            if(!dbList.contains(sdList.get(i))) {
+        for (int i = 0; i < sdList.size(); i++) {
+            if (!dbList.contains(sdList.get(i))) {
                 dbList.add(sdList.get(i));
             }
         }
@@ -257,7 +257,7 @@ public class MusicDBDAO extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("select * from musicTBL order by playCount desc limit 5;", null);
 
         try {
-            while(cursor.moveToNext()) {
+            while (cursor.moveToNext()) {
                 String id = cursor.getString(0);
                 String artist = cursor.getString(1);
                 String title = cursor.getString(2);
@@ -270,10 +270,62 @@ public class MusicDBDAO extends SQLiteOpenHelper {
                 list.add(musicData);
             }
 
-        }catch(Exception e) {
-            Log.e("selectMusicTBLPCount 5","select Error(favor)");
+        } catch (Exception e) {
+            Log.e("selectMusicTBLPCount 5", "select Error(pcount5)");
         }
 
         return list;
+    }
+
+    public ArrayList<MusicData> selectMusicTBLLike(String str) {
+        ArrayList<MusicData> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from musicTBL where  artist like '%" + str + "%';", null);
+
+        //title 검색
+        try {
+            while (cursor.moveToNext()) {
+                String id = cursor.getString(0);
+                String artist = cursor.getString(1);
+                String title = cursor.getString(2);
+                String albumArt = cursor.getString(3);
+                String duration = cursor.getString(4);
+                int playCount = cursor.getInt(5);
+                int favor = cursor.getInt(6);
+
+                MusicData musicData = new MusicData(id, artist, title, albumArt, duration, playCount, favor);
+                list.add(musicData);
+            }
+
+        } catch (Exception e) {
+            Log.e("selectMusicTBL LIKE", "select Error(LIKE)");
+        }
+
+        //artist 검색
+        try {
+            while (cursor.moveToNext()) {
+                String id = cursor.getString(0);
+                String artist = cursor.getString(1);
+                String title = cursor.getString(2);
+                String albumArt = cursor.getString(3);
+                String duration = cursor.getString(4);
+                int playCount = cursor.getInt(5);
+                int favor = cursor.getInt(6);
+
+                MusicData musicData = new MusicData(id, artist, title, albumArt, duration, playCount, favor);
+                list.add(musicData);
+            }
+
+        } catch (Exception e) {
+            Log.e("selectMusicTBL LIKE", "select Error(LIKE/artist)");
+        }
+
+        if(list == null) {
+            Toast.makeText(context, "조회된 정보가 없습니다", Toast.LENGTH_SHORT).show();
+        } else {
+            return list;
+        }
+
+        return null;
     }
 }

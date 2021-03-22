@@ -6,14 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +18,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -35,8 +32,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private ImageButton imgBtnDrawer, imgBtnFavor, imgBtnPrev, imgBtnPlay, imgBtnNext, lm_imgBtnBack;
+    private ImageButton imgBtnDrawer, imgBtnFavor, imgBtnPrev, imgBtnPlay, imgBtnNext, lm_imgBtnBack, lm_imgBtn_search;
     private TextView tvTitle, tvArtist, tvStartTime, tvEndTime;
+    private EditText edt_search;
     private SeekBar seekBar;
     private BottomNavigationView bottomMenu;
     private DrawerLayout drawer;
@@ -48,17 +46,20 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<MusicData> favorList = new ArrayList<>();
     private ArrayList<MusicData> pCountList = new ArrayList<>();
     private ArrayList<MusicData> pCountList5 = new ArrayList<>();
+    private ArrayList<MusicData> searchList = new ArrayList<>();
     private MusicAdapter musicAdapter;
     private MusicAdapter musicAdapterFavor;
     private MusicAdapter musicAdapterPCount;
     private MusicAdapter_top5 musicAdapterPCount5;
+    private MusicAdapter musicAdapterSearch;
     //==================================================
     private SimpleDateFormat sdf = new SimpleDateFormat("m:ss");
     private MediaPlayer mPlayer = new MediaPlayer();
     private boolean flag = false; // false = 현재 일시정지, true = 현재 재생중
     private int index;
-    private int type = 0;
+    private int type = 2;
     private long backBtn = 0;
+    private String str;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +84,10 @@ public class MainActivity extends AppCompatActivity {
         //SeekBar동작 메소드
         seekBarchangeFunc();
 
+        //첫화면 -> 조회수 순으로 지정
+        setPlayerData(0);
+        mPlayer.stop();
+
         eventHandler();
     }
 
@@ -94,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.sortName:
                         firstFragmentReplace();
+
+                        lm_imgBtn_search.setVisibility(View.INVISIBLE);
+                        edt_search.setVisibility(View.INVISIBLE);
                         break;
 
                     case R.id.sortFavor:
@@ -104,6 +112,9 @@ public class MainActivity extends AppCompatActivity {
                         fragment2.setArguments(bundle);
                         ft.replace(R.id.lm_frameLayout, fragment2);
                         ft.commit();
+
+                        lm_imgBtn_search.setVisibility(View.INVISIBLE);
+                        edt_search.setVisibility(View.INVISIBLE);
                         break;
 
                     case R.id.sortPCount:
@@ -114,9 +125,23 @@ public class MainActivity extends AppCompatActivity {
                         fragment3.setArguments(bundle1);
                         ft1.replace(R.id.lm_frameLayout, fragment3);
                         ft1.commit();
+
+                        lm_imgBtn_search.setVisibility(View.INVISIBLE);
+                        edt_search.setVisibility(View.INVISIBLE);
                         break;
-                    case R.id.toPlayer:
-                        drawer.closeDrawer(GravityCompat.START);
+
+                    case R.id.search:
+                        FragmentTransaction ft2 = getSupportFragmentManager().beginTransaction();
+                        Fragment5 fragment5 = new Fragment5();
+                        Bundle bundle2 = new Bundle(1);
+                        bundle2.putParcelable("Adapter", musicAdapterSearch);
+                        fragment5.setArguments(bundle2);
+                        ft2.replace(R.id.lm_frameLayout, fragment5);
+                        ft2.commit();
+
+                        lm_imgBtn_search.setVisibility(View.VISIBLE);
+                        edt_search.setVisibility(View.VISIBLE);
+                        break;
                     default:
                         break;
                 }
@@ -154,6 +179,19 @@ public class MainActivity extends AppCompatActivity {
             type = 2;
             setPlayerData(position);
             drawer.closeDrawer(GravityCompat.START);
+
+        });
+
+        imgBtnPrev.setOnClickListener(v -> {
+            mPlayer.stop();
+            mPlayer.reset();
+            if (index == 0) {
+                Toast.makeText(this, "재생리스트의 첫번째입니다", Toast.LENGTH_SHORT).show();
+                setPlayerData(index);
+            } else {
+                index--;
+                setPlayerData(index);
+            }
         });
 
         imgBtnPlay.setOnClickListener(v -> {
@@ -169,22 +207,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        imgBtnPrev.setOnClickListener(v -> {
-            mPlayer.stop();
-            mPlayer.reset();
-            if (index == 0) {
-                Toast.makeText(this, "재생리스트의 첫번째입니다", Toast.LENGTH_SHORT).show();
-                setPlayerData(index);
-            } else {
-                index--;
-                setPlayerData(index);
-            }
-        });
-
         imgBtnNext.setOnClickListener(v -> {
             mPlayer.stop();
             mPlayer.reset();
-            if (index == musicList.size() - 1 || index == favorList.size() - 1 || index == pCountList.size() - 1 || index == pCountList5.size()-1) {
+            if (index == musicList.size() - 1 || index == favorList.size() - 1 || index == pCountList.size() - 1 || index == pCountList5.size() - 1) {
                 index--;
                 Toast.makeText(this, "재생리스트의 마지막입니다", Toast.LENGTH_SHORT).show();
             }
@@ -208,6 +234,26 @@ public class MainActivity extends AppCompatActivity {
                 favorList.add(musicData);
                 musicAdapterFavor.notifyDataSetChanged();
             }
+        });
+
+        lm_imgBtn_search.setOnClickListener(v -> {
+            str = edt_search.getText().toString();
+            searchList = musicDB.selectMusicTBLLike(str);
+            musicAdapterSearch = new MusicAdapter(getApplicationContext(), searchList);
+
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            Fragment5 fragment5 = new Fragment5();
+            Bundle bundle1 = new Bundle(1);
+            bundle1.putParcelable("Adapter", musicAdapterSearch);
+            fragment5.setArguments(bundle1);
+            ft.replace(R.id.lm_frameLayout, fragment5);
+            ft.commit();
+
+            musicAdapterSearch.setOnItemClickListener((view, position) -> {
+                type = 4;
+                setPlayerData(position);
+                drawer.closeDrawer(GravityCompat.START);
+            });
         });
 
         imgBtnDrawer.setOnClickListener(v -> {
@@ -249,6 +295,7 @@ public class MainActivity extends AppCompatActivity {
         musicAdapterFavor = new MusicAdapter(getApplicationContext(), favorList);
         musicAdapterPCount = new MusicAdapter(getApplicationContext(), pCountList);
         musicAdapterPCount5 = new MusicAdapter_top5(getApplicationContext(), pCountList5);
+        musicAdapterSearch = new MusicAdapter(getApplicationContext(), searchList);
     }
 
     private void getMP3FileFunc() {
@@ -271,6 +318,8 @@ public class MainActivity extends AppCompatActivity {
         pCountList = musicDB.selectMusicTBLPlayCount();
         //조회순 파일 추출(top5)
         pCountList5 = musicDB.selectMusicTBLPlayCountTop5();
+        //검색 파일 추출
+        searchList = musicDB.selectMusicTBLLike(str);
     }
 
     private void firstFragmentReplace() {
@@ -306,6 +355,8 @@ public class MainActivity extends AppCompatActivity {
         imgBtnPlay = findViewById(R.id.imgBtnPlay);
         imgBtnNext = findViewById(R.id.imgBtnNext);
         lm_imgBtnBack = findViewById(R.id.lm_imgBtnBack);
+        lm_imgBtn_search = findViewById(R.id.lm_imgBtn_search);
+        edt_search = findViewById(R.id.edt_search);
         ivAlbum = findViewById(R.id.ivAlbum);
         bottomMenu = findViewById(R.id.bottomMenu);
         tvTitle = findViewById(R.id.tvTitle);
@@ -352,6 +403,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 3:
                 musicData = pCountList5.get(position);
+                break;
+            case 4:
+                musicData = searchList.get(position);
+                break;
         }
 
         tvTitle.setText(musicData.getTitle());
@@ -408,14 +463,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(drawer.isDrawerOpen(GravityCompat.START)) {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }
 
-        if(System.currentTimeMillis() > backBtn + 2000) {
+        if (System.currentTimeMillis() > backBtn + 2000) {
             backBtn = System.currentTimeMillis();
             Toast.makeText(getApplicationContext(), "한번 더 누르면 종료합니다", Toast.LENGTH_SHORT).show();
-        } else if(System.currentTimeMillis() <= backBtn + 2000) {
+        } else if (System.currentTimeMillis() <= backBtn + 2000) {
             finish();
         }
     }

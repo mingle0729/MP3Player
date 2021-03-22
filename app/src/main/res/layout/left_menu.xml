@@ -10,7 +10,7 @@
 
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:background="@color/dark_green">
 
         <ImageButton
@@ -63,6 +63,34 @@
     </FrameLayout>
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="3dp">
+
+        <EditText
+            android:id="@+id/edt_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="곡명 / 가수명 입력"
+            android:background="@color/dark_green"
+            android:textColorHint="#80FF9800"
+            android:layout_weight="1"
+            android:textColor="@color/orange"
+            android:visibility="invisible"
+            android:textSize="20sp"/>
+
+        <ImageButton
+            android:id="@+id/lm_imgBtn_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:background="@color/dark_green"
+            android:visibility="invisible"
+            android:src="@drawable/ic_baseline_search_24"/>
+
+    </LinearLayout>
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomMenu"
         app:menu="@menu/bottom_menu"
