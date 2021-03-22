@@ -14,6 +14,6 @@
         android:icon="@drawable/ic_baseline_touch_app_24"/>
     <item
         android:id="@+id/search"
-        android:title="플레이어"
+        android:title="검색"
         android:icon="@drawable/ic_baseline_search_24" />
 </menu>

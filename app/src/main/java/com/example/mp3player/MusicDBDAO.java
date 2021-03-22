@@ -280,7 +280,7 @@ public class MusicDBDAO extends SQLiteOpenHelper {
     public ArrayList<MusicData> selectMusicTBLLike(String str) {
         ArrayList<MusicData> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from musicTBL where  artist like '%" + str + "%';", null);
+        Cursor cursor = db.rawQuery("select * from musicTBL where title like '%" + str + "%';", null);
 
         //title 검색
         try {
@@ -301,16 +301,18 @@ public class MusicDBDAO extends SQLiteOpenHelper {
             Log.e("selectMusicTBL LIKE", "select Error(LIKE)");
         }
 
+
         //artist 검색
+        Cursor cursor1 = db.rawQuery("select * from musicTBL where artist like '%" + str + "%';", null);
         try {
-            while (cursor.moveToNext()) {
-                String id = cursor.getString(0);
-                String artist = cursor.getString(1);
-                String title = cursor.getString(2);
-                String albumArt = cursor.getString(3);
-                String duration = cursor.getString(4);
-                int playCount = cursor.getInt(5);
-                int favor = cursor.getInt(6);
+            while (cursor1.moveToNext()) {
+                String id = cursor1.getString(0);
+                String artist = cursor1.getString(1);
+                String title = cursor1.getString(2);
+                String albumArt = cursor1.getString(3);
+                String duration = cursor1.getString(4);
+                int playCount = cursor1.getInt(5);
+                int favor = cursor1.getInt(6);
 
                 MusicData musicData = new MusicData(id, artist, title, albumArt, duration, playCount, favor);
                 list.add(musicData);
